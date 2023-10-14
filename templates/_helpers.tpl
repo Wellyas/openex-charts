@@ -121,18 +121,22 @@ Return the Minio hostname
 {{- end -}}
 
 {{/*
-Return the Database hostname
+Return the PostgreSQL Hostname
 */}}
 {{- define "openex-charts.databaseHost" -}}
-{{- if eq .Values.postgresql.architecture "replication" }}
-{{- ternary (include "openex-charts.postgresql.fullname" .) (tpl .Values.externalDatabase.host $) .Values.postgresql.enabled -}}-primary
+{{- if .Values.postgresql.enabled }}
+    {{- if eq .Values.postgresql.architecture "replication" }}
+        {{- printf "%s-%s" (include "openex-charts.postgresql.fullname" .) "primary" | trunc 63 | trimSuffix "-" -}}
+    {{- else -}}
+        {{- print (include "openex-charts.postgresql.fullname" .) -}}
+    {{- end -}}
 {{- else -}}
-{{- ternary (include "openex-charts.postgresql.fullname" .) (tpl .Values.externalDatabase.host $) .Values.postgresql.enabled -}}
+    {{- print .Values.externalDatabase.host -}}
 {{- end -}}
 {{- end -}}
 
 {{/*
-Return the Database port
+Return the PostgreSQL Port
 */}}
 {{- define "openex-charts.databasePort" -}}
 {{- if .Values.postgresql.enabled }}
@@ -143,21 +147,13 @@ Return the Database port
 {{- end -}}
 
 {{/*
-Return the Database database name
+Return the PostgreSQL Database Name
 */}}
 {{- define "openex-charts.databaseName" -}}
 {{- if .Values.postgresql.enabled }}
-    {{- if .Values.global.postgresql }}
-        {{- if .Values.global.postgresql.auth }}
-            {{- coalesce .Values.global.postgresql.auth.database .Values.postgresql.auth.database -}}
-        {{- else -}}
-            {{- .Values.postgresql.auth.database -}}
-        {{- end -}}
-    {{- else -}}
-        {{- .Values.postgresql.auth.database -}}
-    {{- end -}}
+    {{- print .Values.postgresql.auth.database -}}
 {{- else -}}
-    {{- .Values.externalDatabase.database -}}
+    {{- print .Values.externalDatabase.database -}}
 {{- end -}}
 {{- end -}}
 
