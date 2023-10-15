@@ -231,6 +231,11 @@ postgresql:
     database: openex
     username: openexpsql
     password: changeme
+  existingSecret: ""
+  architecture: standalone
+  service:
+    ports:
+      postgresql: 5432
 
 minio:
   enabled: true
@@ -244,6 +249,11 @@ externalMinio:
   port: 9000
   user: bn_minio
   password: ""
+  existingSecret: ""
+  existingSecretHostKey: ""
+  existingSecretPortKey: ""
+  existingSecretUserKey: ""
+  existingSecretPasswordKey: ""
 
 externalDatabase:
   host: ""

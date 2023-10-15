@@ -179,10 +179,10 @@ Return the Database user
 {{/*
 Return the Minio Secret Name
 */}}
-{{ - define "openex-charts.minioSecretName" -}}
+{{- define "openex-charts.minioSecretName" -}}
 {{- if .Values.minio.enabled }}
     {{- if .Values.minio.auth.existingSecret -}}
-    {{- print .Values.minio.auth.existingSecret-}}
+    {{- print .Values.minio.auth.existingSecret -}}
     {{- else -}}
     {{- print (include "openex-charts.minio.fullname" .) -}}
     {{- end -}}
