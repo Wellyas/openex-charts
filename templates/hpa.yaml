@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "openex-charts.fullname" . }}
+  name: {{ include "openex.fullname" . }}
   labels:
-    {{- include "openex-charts.labels" . | nindent 4 }}
+    {{- include "openex.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "openex-charts.fullname" . }}
+    name: {{ include "openex.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

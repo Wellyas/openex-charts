@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "openex-charts.fullname" . }}
+  name: {{ include "openex.fullname" . }}
   labels:
-    {{- include "openex-charts.labels" . | nindent 4 }}
+    {{- include "openex.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "openex-charts.selectorLabels" . | nindent 6 }}
+      {{- include "openex.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "openex-charts.labels" . | nindent 8 }}
+        {{- include "openex.labels" . | nindent 8 }}
 	{{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -27,7 +27,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "openex-charts.serviceAccountName" . }}
+      serviceAccountName: {{ include "openex.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -43,13 +43,13 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "openex-charts.databaseSecretName" . }}
-                  key: {{ include "openex-charts.databaseSecretPasswordKey" . | quote }}
+                  name: {{ include "openex.databaseSecretName" . }}
+                  key: {{ include "openex.databaseSecretPasswordKey" . | quote }}
             - name: MINIO_ACCESS-SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "openex-charts.minioSecretName" . }}
-                  key: "password"
+                  name: {{ include "openex.minioSecretName" . }}
+                  key: "root-password"
           ports:
             - name: http
               containerPort: {{ .Values.containerPorts.http }}

@@ -1,4 +1,4 @@
-# Default values for openex-charts.
+# Default values for openex.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -13,6 +13,7 @@ global:
   imagePullSecrets: []
   storageClass: ""
 
+adminUsername: admin@openex.com
 
 image:
   repository: openexhq/platform
@@ -243,6 +244,10 @@ minio:
     rootuser: openex_minio
     password: changeme
     existingSecret: ""
+  service:
+    ports:
+      api: 9000
+      console: 9001
 
 externalMinio:
   host: ""
@@ -253,6 +258,7 @@ externalMinio:
   existingSecretHostKey: ""
   existingSecretPortKey: ""
   existingSecretUserKey: ""
+  existingSecretBucketKey: ""
   existingSecretPasswordKey: ""
 
 externalDatabase:

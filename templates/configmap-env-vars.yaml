@@ -4,14 +4,16 @@ metadata:
   name: {{ printf "%s-env-vars" (include "common.names.fullname" .) }}
   namespace: {{ include "common.names.namespace" . | quote }}
   labels: {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
-    app.kubernetes.io/component: openex-charts
+    app.kubernetes.io/component: openex
   {{- if .Values.commonAnnotations }}
   annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
 data:
-  OPENEX_BASE-URL: {{include "openex-charts.rootURL" . | quote}}
+  OPENEX_BASE-URL: {{include "openex.rootURL" . | quote}}
   LOGGING_FILE_NAME: "/dev/stdout"
-  SPRING_DATASOURCE_URL: {{ printf "jdbc:postgresql://%s:%s/%s" (include "openex-charts.databaseHost" . ) (include "openex-charts.databasePort" . ) (include "openex-charts.databaseName" .) | quote }}
-  SPRING_DATASOURCE_USERNAME: {{ include "openex-charts.databaseUser" . | quote }}
+  SPRING_DATASOURCE_URL: {{ printf "jdbc:postgresql://%s:%s/%s" (include "openex.databaseHost" . ) (include "openex.databasePort" . ) (include "openex.databaseName" .) | quote }}
+  SPRING_DATASOURCE_USERNAME: {{ include "openex.databaseUser" . | quote }}
   SERVER_PORT: {{ .Values.containerPorts.http | quote }}
-  MINIO_ACCESS-KEY: {{ .Values.minio.auth.rootuser }}
+  MINIO_ACCESS-KEY: {{ include "openex.minioUser" . | quote }}
+  MINIO_ENDPOINT: {{ include "openex.minioHost" . | quote }}
+  MINIO_PORT: {{ include "openex.minioPort" . | quote }}

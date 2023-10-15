@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "openex-charts.name" -}}
+{{- define "openex.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "openex-charts.fullname" -}}
+{{- define "openex.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -28,7 +28,7 @@ If release name contains chart name it will be used as a full name.
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "openex-charts.postgresql.fullname" -}}
+{{- define "openex.postgresql.fullname" -}}
 {{- include "common.names.dependency.fullname" (dict "chartName" "postgresql" "chartValues" .Values.postgresql "context" $) -}}
 {{- end -}}
 
@@ -36,23 +36,23 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "openex-charts.minio.fullname" -}}
+{{- define "openex.minio.fullname" -}}
 {{- include "common.names.dependency.fullname" (dict "chartName" "minio" "chartValues" .Values.minio "context" $) -}}
 {{- end -}}
 
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "openex-charts.chart" -}}
+{{- define "openex.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "openex-charts.labels" -}}
-helm.sh/chart: {{ include "openex-charts.chart" . }}
-{{ include "openex-charts.selectorLabels" . }}
+{{- define "openex.labels" -}}
+helm.sh/chart: {{ include "openex.chart" . }}
+{{ include "openex.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -62,26 +62,26 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "openex-charts.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "openex-charts.name" . }}
+{{- define "openex.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "openex.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "openex-charts.serviceAccountName" -}}
+{{- define "openex.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "openex-charts.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "openex.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
 
 {{/*
-openex-charts root URL
+openex root URL
 */}}
-{{- define "openex-charts.rootURL" -}}
+{{- define "openex.rootURL" -}}
 {{- if .Values.rootURL -}}
     {{- print .Values.rootURL -}}
 {{- else if .Values.ingress.enabled -}}
@@ -97,16 +97,16 @@ openex-charts root URL
 {{- end -}}
 
 {{/*
-openex-charts credential secret name
+openex credential secret name
 */}}
-{{- define "openex-charts.secretName" -}}
+{{- define "openex.secretName" -}}
 {{- coalesce .Values.existingSecret (include "common.names.fullname" .) -}}
 {{- end -}}
 
 {{/*
 Return true if a secret object should be created
 */}}
-{{- define "openex-charts.createSecret" -}}
+{{- define "openex.createSecret" -}}
 {{- if .Values.auth.existingSecret -}}
 {{- else -}}
     {{- true -}}
@@ -114,21 +114,14 @@ Return true if a secret object should be created
 {{- end -}}
 
 {{/*
-Return the Minio hostname
-*/}}
-{{- define "openex-charts.minioHost" -}}
-{{- ternary (include "openex-charts.minio.fullname" .) (tpl .Values.externalMinio.host $) .Values.minio.enabled -}}
-{{- end -}}
-
-{{/*
 Return the PostgreSQL Hostname
 */}}
-{{- define "openex-charts.databaseHost" -}}
+{{- define "openex.databaseHost" -}}
 {{- if .Values.postgresql.enabled }}
     {{- if eq .Values.postgresql.architecture "replication" }}
-        {{- printf "%s-%s" (include "openex-charts.postgresql.fullname" .) "primary" | trunc 63 | trimSuffix "-" -}}
+        {{- printf "%s-%s" (include "openex.postgresql.fullname" .) "primary" | trunc 63 | trimSuffix "-" -}}
     {{- else -}}
-        {{- print (include "openex-charts.postgresql.fullname" .) -}}
+        {{- print (include "openex.postgresql.fullname" .) -}}
     {{- end -}}
 {{- else -}}
     {{- print .Values.externalDatabase.host -}}
@@ -138,7 +131,7 @@ Return the PostgreSQL Hostname
 {{/*
 Return the PostgreSQL Port
 */}}
-{{- define "openex-charts.databasePort" -}}
+{{- define "openex.databasePort" -}}
 {{- if .Values.postgresql.enabled }}
     {{- print .Values.postgresql.primary.service.ports.postgresql -}}
 {{- else -}}
@@ -149,7 +142,7 @@ Return the PostgreSQL Port
 {{/*
 Return the PostgreSQL Database Name
 */}}
-{{- define "openex-charts.databaseName" -}}
+{{- define "openex.databaseName" -}}
 {{- if .Values.postgresql.enabled }}
     {{- print .Values.postgresql.auth.database -}}
 {{- else -}}
@@ -160,7 +153,7 @@ Return the PostgreSQL Database Name
 {{/*
 Return the Database user
 */}}
-{{- define "openex-charts.databaseUser" -}}
+{{- define "openex.databaseUser" -}}
 {{- if .Values.postgresql.enabled -}}
     {{- if .Values.global.postgresql -}}
         {{- if .Values.global.postgresql.auth -}}
@@ -177,27 +170,14 @@ Return the Database user
 {{- end -}}
 
 {{/*
-Return the Minio Secret Name
-*/}}
-{{- define "openex-charts.minioSecretName" -}}
-{{- if .Values.minio.enabled }}
-    {{- if .Values.minio.auth.existingSecret -}}
-    {{- print .Values.minio.auth.existingSecret -}}
-    {{- else -}}
-    {{- print (include "openex-charts.minio.fullname" .) -}}
-    {{- end -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Return the PostgreSQL Secret Name
 */}}
-{{- define "openex-charts.databaseSecretName" -}}
+{{- define "openex.databaseSecretName" -}}
 {{- if .Values.postgresql.enabled }}
     {{- if .Values.postgresql.auth.existingSecret -}}
     {{- print .Values.postgresql.auth.existingSecret -}}
     {{- else -}}
-    {{- print (include "openex-charts.postgresql.fullname" .) -}}
+    {{- print (include "openex.postgresql.fullname" .) -}}
     {{- end -}}
 {{- else if .Values.externalDatabase.existingSecret -}}
     {{- print .Values.externalDatabase.existingSecret -}}
@@ -205,10 +185,11 @@ Return the PostgreSQL Secret Name
     {{- printf "%s-%s" (include "common.names.fullname" .) "externaldb" -}}
 {{- end -}}
 {{- end -}}
+
 {{/*
 Add environment variables to configure database values
 */}}
-{{- define "openex-charts.databaseSecretPasswordKey" -}}
+{{- define "openex.databaseSecretPasswordKey" -}}
 {{- if .Values.postgresql.enabled -}}
     {{- print "password" -}}
 {{- else -}}
@@ -224,31 +205,75 @@ Add environment variables to configure database values
 {{- end -}}
 {{- end -}}
 
-{{- define "openex-charts.databaseSecretHostKey" -}}
+{{- define "openex.databaseSecretHostKey" -}}
     {{- if .Values.externalDatabase.existingSecretHostKey -}}
         {{- printf "%s" .Values.externalDatabase.existingSecretHostKey -}}
     {{- else -}}
         {{- print "db-host" -}}
     {{- end -}}
 {{- end -}}
-{{- define "openex-charts.databaseSecretPortKey" -}}
+{{- define "openex.databaseSecretPortKey" -}}
     {{- if .Values.externalDatabase.existingSecretPortKey -}}
         {{- printf "%s" .Values.externalDatabase.existingSecretPortKey -}}
     {{- else -}}
         {{- print "db-port" -}}
     {{- end -}}
 {{- end -}}
-{{- define "openex-charts.databaseSecretUserKey" -}}
+{{- define "openex.databaseSecretUserKey" -}}
     {{- if .Values.externalDatabase.existingSecretUserKey -}}
         {{- printf "%s" .Values.externalDatabase.existingSecretUserKey -}}
     {{- else -}}
         {{- print "db-port" -}}
     {{- end -}}
 {{- end -}}
-{{- define "openex-charts.databaseSecretDatabaseKey" -}}
+{{- define "openex.databaseSecretDatabaseKey" -}}
     {{- if .Values.externalDatabase.existingSecretDatabaseKey -}}
         {{- printf "%s" .Values.externalDatabase.existingSecretDatabaseKey -}}
     {{- else -}}
         {{- print "db-port" -}}
     {{- end -}}
+{{- end -}}
+
+{{/*
+Return the Minio hostname
+*/}}
+{{- define "openex.minioHost" -}}
+{{- ternary (include "openex.minio.fullname" .) (tpl .Values.externalMinio.host $) .Values.minio.enabled -}}
+{{- end -}}
+
+{{/*
+Return the Minio Port
+*/}}
+{{- define "openex.minioPort" -}}
+{{- if .Values.minio.enabled }}
+    {{- print .Values.minio.service.ports.api -}}
+{{- else -}}
+    {{- printf "%d" (.Values.externalMinio.port | int ) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the Minio user
+*/}}
+{{- define "openex.minioUser" -}}
+{{- if .Values.minio.enabled -}}
+    {{- .Values.minio.auth.rootuser -}}
+{{- else -}}
+    {{- .Values.externalMinio.user -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the Minio Secret Name
+*/}}
+{{- define "openex.minioSecretName" -}}
+{{- if .Values.minio.enabled }}
+    {{- if .Values.minio.auth.existingSecret -}}
+    {{- print .Values.minio.auth.existingSecret -}}
+    {{- else -}}
+    {{- print (include "openex.minio.fullname" .) -}}
+    {{- end -}}
+{{- else if .Values.externalMinio.existingSecret -}}
+    {{- print .Values.externalMinio.existingSecret -}}
+{{- end -}}
 {{- end -}}

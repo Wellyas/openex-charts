@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "openex-charts.fullname" . }}-test-connection"
+  name: "{{ include "openex.fullname" . }}-test-connection"
   labels:
-    {{- include "openex-charts.labels" . | nindent 4 }}
+    {{- include "openex.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test
 spec:
@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "openex-charts.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "openex.fullname" . }}:{{ .Values.service.port }}']
   restartPolicy: Never
