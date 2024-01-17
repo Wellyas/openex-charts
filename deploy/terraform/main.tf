@@ -7,7 +7,7 @@ provider "helm" {
 resource "helm_release" "openex" {
   count = 1
   name       = "openex"
-  chart      = "./openex-charts"
+  chart      = "../../"
   depends_on = [ helm_release.minio ]
 
   set {
@@ -38,6 +38,10 @@ resource "helm_release" "openex" {
   set {
     name = "ingress.tls"
     value = "true"
+  }
+  set {
+    name = "ingress.annotations.cert-manager\\.io/cluster-issuer"
+    value = "letsencrypt"
   }
 }
 
