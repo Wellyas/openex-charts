@@ -7,7 +7,7 @@ provider "helm" {
 resource "helm_release" "openex" {
   count = 1
   name       = "openex"
-  chart      = "../../"
+  chart      = "../../charts/openex"
   depends_on = [ helm_release.minio ]
 
   set {
