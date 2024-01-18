@@ -1,3 +1,2 @@
-charts/*
 deploy/terraform/.terraform*
 deploy/terraform/terraform.tfstate*
