@@ -17,7 +17,7 @@ Please refer to Helm's [documentation](https://helm.sh/docs) to get started.
 Once Helm has been set up correctly, add the repo as follows:
 
 ```bash
-helm repo add wellyasopenex https://openex.github.io/openex-charts
+helm repo add wellyas-openex https://wellyas.github.io/openex-charts
 ```
 
 then prepare your own `overrides.yaml` file and then install the chart with the following command:
@@ -27,7 +27,7 @@ helm install openex \
 --namespace ${namespace} \
 --create-namespace \
 -f overrides.yaml \
-wellyasopenex/openex
+wellyas-openex/openex
 ```
 
 Be sure to replace `${namespace}` with your own namespace.
